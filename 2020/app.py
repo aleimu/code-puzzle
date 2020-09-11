@@ -2,11 +2,33 @@ import os
 import time
 from flask import Flask, request, Response
 from threading import get_ident
+from functools import wraps
+from line_profiler import LineProfiler
+
+LINE_PROFILER_ENABLE = True
+
+
+# 查询接口中每行代码执行的时间
+def func_line_time(f):
+    @wraps(f)
+    def _decorator(*args, **kwargs):
+        func_return = f(*args, **kwargs)
+        if not LINE_PROFILER_ENABLE:
+            return func_return
+        lp = LineProfiler()
+        lp_wrap = lp(f)
+        lp_wrap(*args, **kwargs)
+        lp.print_stats()
+        return func_return
+
+    return _decorator
+
 
 app = Flask(__name__)
 
 
 @app.route('/1', methods=['GET', "POST", "PUT", "DELETE"])
+@func_line_time
 def test1():
     thread_id = get_ident()  # 获取处理此请求的线程id
     pid = os.getpid()  # 获取当前进程id
@@ -18,6 +40,7 @@ def test1():
 
 
 @app.route('/2', methods=['GET', "POST", "PUT", "DELETE"])
+@func_line_time
 def test2():
     thread_id = get_ident()  # 获取处理此请求的线程id
     pid = os.getpid()  # 获取当前进程id
