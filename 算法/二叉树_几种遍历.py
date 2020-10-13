@@ -1,3 +1,6 @@
+__doc__ = """二叉树的基础遍历方式"""
+
+
 class BinaryTreeNode(object):
     def __init__(self, data=None, left=None, right=None):
         self.data = data
@@ -6,6 +9,10 @@ class BinaryTreeNode(object):
 
 
 class BinaryTree(object):
+    """
+    tips:前,中,后遍历的命名意思是将处理逻辑代码写在遍历左右子节点的代码的位置.
+    """
+
     def __init__(self, root=None):
         self.root = root
 
@@ -13,6 +20,7 @@ class BinaryTree(object):
         return self.root == None
 
     def preOrder(self, node):
+        """前序遍历"""
         if node == None:
             return
         # 先打印根结点，再打印左结点，后打印右结点
@@ -21,6 +29,7 @@ class BinaryTree(object):
         self.preOrder(node.right)
 
     def inOrder(self, node):
+        """中序遍历"""
         if node == None:
             return
         # 先打印左结点，再打印根结点，后打印右结点
@@ -29,6 +38,7 @@ class BinaryTree(object):
         self.inOrder(node.right)
 
     def postOrder(self, node):
+        """后序遍历"""
         if node == None:
             return
         # 先打印左结点，再打印右结点，后打印根结点
@@ -36,15 +46,15 @@ class BinaryTree(object):
         self.postOrder(node.right)
         print(node.data)
 
-    # 深度
     def depthOrder(self, node):
+        """深度遍历"""
         if node == None:
             return 0
         left, right = self.depthOrder(node.left), self.depthOrder(node.right)
         return max(left, right) + 1
 
-    # 层次遍历
     def levelOrder(self, node):
+        """层次遍历"""
         if node == None:
             return
         q = []
