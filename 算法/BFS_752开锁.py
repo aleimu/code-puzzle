@@ -34,6 +34,7 @@ __doc__ = """
 """
 
 from queue import Queue
+import collections
 
 
 class Solution:
@@ -108,9 +109,6 @@ class Solution:
         return -1
 
 
-import collections
-
-
 class Solution:
     def openLock(self, deadends: list, target: str) -> int:
         deadends_set = set(deadends)
@@ -139,6 +137,10 @@ class Solution:
 
 
 class Solution:
+    """
+    双向 BFS 还是遵循 BFS 算法框架的，只是不再使用队列，而是使用HashSet 方便快速判断两个集合是否有交集
+    """
+
     def openLock(self, deadends: list, target: str) -> int:
         # 转为集合,O(1)查找
         deadends = set(deadends)
@@ -157,7 +159,7 @@ class Solution:
 
         while left:
             next_level = set()
-            # 每次都搜索节点较少的一边
+            # 每次都搜索节点较少的一边,相当于轮流扩散
             if len(left) > len(right):
                 left, right = right, left
             # 普通的bfs
