@@ -39,10 +39,10 @@ if __name__ == '__main__':
     from flask_docs import ApiDoc
 
     # 需要显示文档的 Api
-    app.config['API_DOC_MEMBER'] = ['vx', 'v1','api']
+    app.config['API_DOC_MEMBER'] = ['vx', 'v1', 'api']
     # 需要排除的 RESTful Api 文档
     app.config['RESTFUL_API_DOC_EXCLUDE'] = []
     ApiDoc(app)
     print(vars(app))
     # 启动flask程序
-    app.run()
+    app.run(host='0.0.0.0', port=3000)

@@ -1,8 +1,13 @@
 __doc__ = """
 https://zhuanlan.zhihu.com/p/76348091
 KMP算法是一种字符串匹配算法, 可以在 O(n+m) 的时间复杂度内实现两个字符串的匹配。
-
 字符串 P 是否为字符串 S 的子串？如果是, 它出现在 S 的哪些位置？其中 S 称为主串；P 称为模式串
+
+核心思想: 
+1.在暴力匹配的基础上优化匹配步骤
+2.寻找子模式串规律,可以帮助主串跳过一定不能匹配的位置
+3.遍历子串用到了双指针和递推关系,遍历主串也是双指针和递推关系,都是记忆了前面的状态,辅助之后的判断
+
 """
 
 
@@ -20,8 +25,9 @@ def bruteForce(s, p):
 
 
 """
-"前缀"指除了最后一个字符以外, 一个字符串的全部头部组合；
-"后缀"指除了第一个字符以外, 一个字符串的全部尾部组合.
+定义:
+    "前缀" 指除了最后一个字符以外, 一个字符串的全部头部组合；
+    "后缀" 指除了第一个字符以外, 一个字符串的全部尾部组合.
 
 下面再以"ABCDABD"为例, 进行介绍：
     ---　"A"的前缀和后缀都为空集, 共有元素的长度为0；
@@ -35,7 +41,7 @@ def bruteForce(s, p):
 """
 
 
-# 部分匹配表
+# 模式匹配表
 def partial_table(p):
     """partial_table("ABCDABD") -> [0, 0, 0, 0, 1, 2, 0]"""
     prefix = set()  # 前缀合集
@@ -48,21 +54,25 @@ def partial_table(p):
 
 
 def partial_table(p):
-    """最长前后缀相同的字符位数---双指针法"""
+    """最长前后缀相同的字符位数---双指针法---递推法---模式串中寻找最长前后缀的推导过程中也包含递进关系"""
     n = len(p)  # 整个字符串长度
     j = 0  # 前缀匹配指向
     i = 1  # 后缀匹配指向
     result_list = [0] * n
     while i < n:
-        if j == 0 and p[j] != p[i]:  # 比较不相等并且此时比较的已经是第一个字符了
-            result_list[i] = 0  # 值为０
-            i += 1  # 向后移动
-        elif p[j] != p[i] and j != 0:  # 比较不相等,将j值设置为ｊ前一位的result_list中的值, 为了在之前匹配到的子串中找到最长相同前后缀
-            j = result_list[j - 1]
-        elif p[j] == p[i]:  # 相等则继续比较
+        print('-----------------------------------------')
+        print(f"i:{i}, j:{j}, result_list:{result_list}")
+        if p[j] != p[i]:  # 比较不相等
+            if j == 0:  # 此时比较的是前缀第一个字符
+                result_list[i] = 0  # 值为０
+                i += 1  # 向后移动
+            else:  # 比较不相等,将j值设置为ｊ前一位的result_list中的值, 为了在之前匹配到的子串中找到最长相同前后缀
+                j = result_list[j - 1]
+        else:  # 相等则继续比较下一位
             result_list[i] = j + 1
             j = j + 1
             i = i + 1
+        print(f"i:{i}, j:{j}, result_list:{result_list}")
     return result_list
 
 
@@ -116,4 +126,4 @@ p = '123123'
 # print(kmp_match("BBC ABCDAB ABCDABCDABDE", "ABCDABD"))
 
 # print(partial_table(p))
-print(partial_table("ABCDABD"))
+print(partial_table("ABCDABDCABC"))
