@@ -1,11 +1,11 @@
 __doc__ = "动态规划  递归的暴力解法 -> 带备忘录的递归解法 -> 非递归的动态规划解法。"
 
-coins = [1, 2, 5]
-amount = 13
+coins = [1, 2, 5]  # 硬币种类
+amount = 13  # 目标金额
 
 
 def coinChange(coins: list, amount: int):
-    """n叉树的遍历，递归+无备忘录"""
+    """自顶而下，递归+无备忘录，n叉树的遍历"""
 
     def dp(n):
         if n == 0:
