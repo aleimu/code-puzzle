@@ -117,52 +117,73 @@ class SingleLinkList(object):
     def remove(self, item):
         """删除节点"""
         cur = self._head
-        pre = None
+        last = None  # 上一个节点
         while cur is not None:
             # 找到指定元素
             if cur.item == item:
                 # 如果第一个就是删除的节点
-                if not pre:
+                if not last:
                     # 将头指针指向头节点的后一个节点
                     self._head = cur.next
                 else:
                     # 将删除位置前一个节点的next指向删除位置的后一个节点
-                    pre.next = cur.next
+                    last.next = cur.next
                 return True
             else:
                 # 继续按链表后移节点
-                pre = cur
+                last = cur
                 cur = cur.next
 
     def find(self, item):
         """查找元素是否存在"""
         return item in self.items()
 
-    # def reverse(self):  # FIXME 想办法通过翻转单个note节点达到链表翻转
-    #     """翻转链表"""
-    #     pre, cur = None, self._head
-    #     # pre, cur = self._head.next, self._head
-    #     pre, cur = self._head, self._head.next
-    #     # print(pre, cur)
-    #     while cur:
-    #         cur.next, pre, cur = pre, cur, cur.next  # 无中间变量交换
-    #     return pre
-
-    def reverse(self):
+    def reverse1(self):  # 通过翻转单个note节点达到链表翻转
         """翻转链表"""
         # 非递归实现
-        if self._head is None:
+        if not self._head or not self._head.next:
             return self._head
-        last = None  # 指向上一个节点
-        while self._head:
-            # 先用tmp保存head的下一个节点的信息，保证单链表不会因为失去head节点的next而就此断裂
-            tmp = self._head.next
-            # 保存完next，就可以让head的next指向last了
-            self._head.next = last
-            # 让last，head依次向后移动一个节点，继续下一次的指针反转
-            last = self._head
-            self._head = tmp
-        return last
+        last = None  # 指向上一个节点,以备后用
+        cur = self._head  # 当前节点,也可以不定义变量直接参与循环,此处为了方便理解,单独定义变量
+        while cur:
+            # 先用next_tmp保存head的下一个节点的信息，保证单链表不会因为失去head节点的next而就此断裂(内部循环使用)
+            next_tmp = cur.next
+            # 下一跳已经保存好,可以开始修改当前节点的下一跳了,也就是上一个节点last,初始头的上一个是没有的即None
+            cur.next = last
+            # 记录下修改后的当前节点,并保存跟新'上一个节点'给下次用.
+            last = cur
+            # 当前节点处理完毕,更新为备份好的原先的下一个节点
+            cur = next_tmp
+        # 最后一个节点变成了头节点
+        self._head = last
+
+    def reverse2(self):
+        last, cur = None, self._head
+        while cur:
+            # cur.next, last, cur = last, cur, cur.next  # 无中间变量交换,链式赋值生效顺序从左到右.
+            print(cur, cur.next, last)
+            # last, cur, cur.next = cur, cur.next, last  # 异常   (详见 交换变量.py)
+            cur, cur.next, last = cur.next, last, cur  # 异常
+            break
+        self._head = last
+
+    """Python 的链式赋值顺序是 自左往右
+    x = [1, 2, 3, 4, 5]
+    i = 0
+    i = x[i] = 3
+    正确的答案却是：变量 i 首先被赋值为 3，然后 x[3] 再被赋值为3，所以最终变量 x 的值为 [1, 2, 3, 3, 5]。
+    """
+
+    def reverse3(self, cur):
+        # 递归实现
+        if not cur or not cur.next:
+            return cur
+        else:
+            newHead = self.reverse3(cur.next)
+            cur.next.next = cur
+            cur.next = None
+            self._head = newHead
+            return newHead
 
     # def __repr__(self):  # 递归打印链表串
     #     return "{}".format(self._head)
@@ -172,57 +193,17 @@ line = SingleLinkList()
 # for x in range(1, 10):
 #     line.append(x)
 line.create(range(10))
-
 print(line._head, line._end)
-print("原始链表:", type(line))  # before: f next:->e next:->d next:->c next:->b next:->a next:->None
+print("原始链表:", type(line))
 line.print()
-line.reverse()
-print("翻转链表:", type(line))  # before: f next:->e next:->d next:->c next:->b next:->a next:->None
+# print("翻转链表:", type(line))
+# line.print()
+# line.reverse1()
+# print("翻转链表:", type(line))
+# line.print()
+line.reverse2()
+print("翻转链表:", type(line))
 line.print()
-
-# def reverseList(head: Node) -> Node:
-#     pre, cur = None, head
-#     while cur:
-#         cur.next, pre, cur = pre, cur, cur.next  # 无中间变量交换
-#     return pre
-#
-#
-# reverseList(line._head)
-# print("翻转后:", line, type(line))  # after: a next:->b next:->c next:->d next:->e next:->f next:->None
-#
-#
-# def reverseListNoRec(line):
-#     head = line._head
-#     # 非递归实现
-#     if head is None:
-#         return head
-#     last = None  # 指向上一个节点
-#     while head:
-#         # 先用tmp保存head的下一个节点的信息，保证单链表不会因为失去head节点的next而就此断裂
-#         tmp = head.next
-#         # 保存完next，就可以让head的next指向last了
-#         head.next = last
-#         # 让last，head依次向后移动一个节点，继续下一次的指针反转
-#         last = head
-#         head = tmp
-#     # return last
-#
-#
-# reverseListNoRec(line)
-# print("翻转后:", line, type(line))  # after: a next:->b next:->c next:->d next:->e next:->f next:->None
-#
-#
-# def ReverseListRec(head):
-#     # 递归实现
-#     if not head or not head.next:
-#         return head
-#     else:
-#         newHead = ReverseListRec(head.next)
-#         head.next.next = head
-#         head.next = None
-#         return newHead
-#
-#
-# line = ReverseListRec(line._head)
-# print("再翻转还原:", line, type(line))
-# # after and after: f next:->e next:->d next:->c next:->b next:->a next:->None
+# line.reverse3(line._head)
+# print("翻转链表:", type(line))
+line.print()
