@@ -156,6 +156,7 @@ class SingleLinkList(object):
             cur = next_tmp
         # 最后一个节点变成了头节点
         self._head = last
+        # https://www.bilibili.com/video/BV1fE411y7C1 动态演示
 
     def reverse2(self):
         last, cur = None, self._head
@@ -174,16 +175,20 @@ class SingleLinkList(object):
     正确的答案却是：变量 i 首先被赋值为 3，然后 x[3] 再被赋值为3，所以最终变量 x 的值为 [1, 2, 3, 3, 5]。
     """
 
-    def reverse3(self, cur):
-        # 递归实现
+    # 递归操作链表并不高效。和迭代解法相比，虽然时间复杂度都是 O(N)，但是迭代解法的空间复杂度是 O(1)，而递归解法需要堆栈，空间复杂度是 O(N)。
+    def reverse3(self, cur):  # 定义:输入一个节点 head，将「以 head 为起点」的链表反转，并返回反转之后的头结点。
+        # 递归实现:不要跳进递归，而是利用明确的定义来实现算法逻辑。
         if not cur or not cur.next:
             return cur
         else:
-            newHead = self.reverse3(cur.next)
-            cur.next.next = cur
-            cur.next = None
+            print('进递归', cur)
+            newHead = self.reverse3(cur.next)  # 立刻在递归找到新链表的头,然后解递归
+            print('出递归', cur, newHead)  # 在解由旧头找新头的递归嵌套中,生成新指向,断开就旧指向
+            cur.next.next = cur  # 依据原有指向,反转生成新指向
+            cur.next = None  # 断开原有指向
             self._head = newHead
             return newHead
+        # https://www.bilibili.com/video/BV1x7411i7Dd 动态演示
 
     # def __repr__(self):  # 递归打印链表串
     #     return "{}".format(self._head)
@@ -201,9 +206,9 @@ line.print()
 # line.reverse1()
 # print("翻转链表:", type(line))
 # line.print()
-line.reverse2()
-print("翻转链表:", type(line))
-line.print()
-# line.reverse3(line._head)
+# line.reverse2()
 # print("翻转链表:", type(line))
+# line.print()
+line.reverse3(line._head)
+print("翻转链表:", type(line))
 line.print()
