@@ -25,8 +25,9 @@ class BinaryTree(object):
             return
         # 先打印根结点，再打印左结点，后打印右结点
         print(node.data)
-        self.preOrder(node.left)
-        self.preOrder(node.right)
+        # fixme 见惯了那种return时进入递归当前函数,这种多递归的还挺好玩,当然还有这种[面试.链表操作_集合2.SingleLinkList.reverse3]在出递归时将进递归的后半部代码继续执行
+        self.preOrder(node.left)  # 会进入递归,至到把左树遍历完
+        self.preOrder(node.right)  # 再进入递归,至到把右树遍历完
 
     def inOrder(self, node):
         """中序遍历"""

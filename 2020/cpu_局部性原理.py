@@ -13,6 +13,7 @@ i = 0
 
 
 def test1():
+    """横向遍历"""
     i = 0
     while i < n:
         # print("i:", i)
@@ -26,6 +27,7 @@ def test1():
 
 
 def test2():
+    """纵向遍历"""
     i = 0
     while i < n:
         # print("i:", i)

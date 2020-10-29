@@ -52,7 +52,7 @@ def ReverseListRec(head):
     if not head or not head.next:
         return head
     else:
-        newHead = ReverseListRec(head.next)
+        newHead = ReverseListRec(head.next)  # fixme 有趣
         head.next.next = head
         head.next = None
         return newHead
