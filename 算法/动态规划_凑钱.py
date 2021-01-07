@@ -15,7 +15,7 @@ def coinChange(coins: list, amount: int):
         res = float('INF')  # 正无穷
         for coin in coins:
             subproblem = dp(n - coin)
-            # ⼦问题⽆解，跳过
+            # 子问题无解，跳过
             if subproblem == -1:
                 continue
             res = min(res, 1 + subproblem)
@@ -39,7 +39,7 @@ def coinChangeMemo(coins: list, amount: int):
         res = float('INF')  # 正无穷
         for coin in coins:
             subproblem = dp(n - coin)
-            # ⼦问题⽆解，跳过
+            # 子问题无解，跳过
             if subproblem == -1:
                 continue
             res = min(res, 1 + subproblem)
@@ -61,7 +61,7 @@ def coinChangeDp1(coins: list, amount: int):
         for x in coins:
             t = i - x
             if t < 0:
-                continue  # 子问题无解
+                continue  # # 子问题无解，跳过
             dp[i] = min(dp.get(i, amount), 1 + dp.get(t, amount))
         i += 1
     print(dp)
